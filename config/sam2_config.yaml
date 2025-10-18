@@ -1,0 +1,4 @@
+model_type: "sam2_hiera_tiny"
+checkpoint_url: "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_tiny.pt"
+config_path: "sam2/configs/sam2.1/sam2_hiera_t.yaml"
+device: "cuda"
