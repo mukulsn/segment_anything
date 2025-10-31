@@ -18,6 +18,8 @@ RUN git clone --depth=1 https://github.com/facebookresearch/sam2.git /opt/ml/cod
     python setup.py build_ext --inplace && \
     rm -rf ~/.cache/pip
 
+ENV PYTHONPATH=/opt/ml/code/sam2:$PYTHONPATH
+
 # ---- Application Code ----
 WORKDIR /opt/ml/code
 COPY requirements.txt .

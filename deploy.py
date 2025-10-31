@@ -2,11 +2,26 @@ import boto3, sagemaker, subprocess, os, tarfile
 from sagemaker import get_execution_role
 from sagemaker.model import Model
 
-role = get_execution_role()
-sess = sagemaker.Session()
-account = sess.boto_session.client('sts').get_caller_identity()['Account']
-region = sess.boto_session.region_name
+# role = get_execution_role()
+# sess = sagemaker.Session()
+# account = sess.boto_session.client('sts').get_caller_identity()['Account']
+# region = sess.boto_session.region_name
 repo_name = "sam2-direct-github"
+
+# Prefer explicit env var when running locally; fall back to get_execution_role() in SageMaker notebook
+role = os.environ.get("SAGEMAKER_ROLE")
+sess = sagemaker.Session()
+try:
+    account = sess.boto_session.client('sts').get_caller_identity()['Account']
+    region = sess.boto_session.region_name
+except Exception as e:
+    raise RuntimeError("Unable to get AWS account/region from boto session. Ensure AWS credentials are configured.") from e
+
+if role is None:
+    try:
+        role = get_execution_role()
+    except Exception:
+        raise RuntimeError("SageMaker role not found. Set SAGEMAKER_ROLE env var when running locally.")
 
 def build_and_push_image():
     ecr = boto3.client('ecr')
